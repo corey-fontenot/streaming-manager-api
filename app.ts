@@ -4,6 +4,7 @@ import { Application } from 'express'
 import cors from 'cors'
 import db from './database.ts'
 import User from './user'
+import jwt from 'jsonwebtoken'
 
 const app: Application = express()
 app.use(cors())
@@ -62,6 +63,59 @@ app.post("/auth/register", async (req, res) => {
 		}).send()
 	} catch (error) {
 		console.log(error)
+	}
+})
+
+app.post("/auth/login", async (req, res) => {
+	try {
+		const data = req.body
+
+		const { email, password } = data
+
+		const registered: Awaited<Boolean> = await db.isUserRegistered(email)
+
+		if (!registered) {
+			res.status(404).json({
+				status: 404,
+				success: false,
+				message: "User not found",
+			})
+			return
+		}
+
+		const user: Awaited<User> = await db.getUserByEmail(email)
+		const passwordMatches: Awaited<Boolean> = await User.comparePassword(password, user.getPassword())
+
+		if (!passwordMatches) {
+			res.status(400).json({
+				status: 400,
+				success: false,
+				message: "Password does not match",
+			})
+			return
+		}
+
+		const token = jwt.sign(
+			{
+				userId: user.getUserId(),
+				email: user.getEmail()
+			},
+			process.env.JWT_SECRET!,
+			{
+				expiresIn: "1d"
+			})
+
+		res.status(200).json({
+			status: 200,
+			success: true,
+			message: "login success",
+			token: token,
+		})
+	} catch (err: any) {
+		res.status(400).json({
+			status: 400,
+			message: err.message.toString(),
+		})
 	}
 })
 

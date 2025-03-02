@@ -1,17 +1,17 @@
 import bcrypt from 'bcrypt-ts'
 
 class User {
-  userId: string | undefined
-  email: string | undefined
-  password: string | undefined
+  userId: string
+  email: string
+  password: string
   createdTs: Date | undefined
   updatedTs: Date | undefined
   lastLoginTs: Date | undefined
 
   constructor(userId?: string, password?: string, email?: string, createdTs?: Date, updatedTs?: Date, lastLogin?: Date) {
-    this.userId = userId ?? undefined
-    this.password = password ?? undefined
-    this.email = email ?? undefined
+    this.userId = userId ?? ''
+    this.password = password ?? ''
+    this.email = email ?? ''
     this.createdTs = createdTs ?? undefined
     this.updatedTs = updatedTs ?? undefined
     this.lastLoginTs = lastLogin ?? undefined
@@ -21,7 +21,7 @@ class User {
     this.userId = userId
   }
 
-  getUserId(): string | undefined {
+  getUserId(): string {
     return this.userId
   }
 
@@ -30,19 +30,16 @@ class User {
     return await bcrypt.hash(password, saltrounds)
   }
 
-  comparePassword(password: string, hashedPassword: string): Boolean {
-    const match: any = (async () => {
-      const result: Awaited<Boolean> = await bcrypt.compare(password, hashedPassword)
-      return result
-    })
-    return match
+  static async comparePassword(password: string, hashedPassword: string): Promise<Boolean> {
+    const result: Awaited<Boolean> = await bcrypt.compare(password, hashedPassword)
+    return result
   }
 
   setPassword(password: string): void {
     this.password = password
   }
 
-  getPassword(): string | undefined {
+  getPassword(): string {
     return this.password
   }
 
@@ -50,7 +47,7 @@ class User {
     this.email = email
   }
 
-  getEmail(): string | undefined {
+  getEmail(): string {
     return this.email
   }
 
