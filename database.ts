@@ -77,7 +77,7 @@ class DBConnection {
   }
 
   async insertUser(user: User): Promise<any> {
-    const query = `INSERT INTO users ("userId", "email", "password", "createdTs", "updatedTs", "lastLogin") VALUES ('${user.getUserId()}', '${user.getPassword()}', '${user.getEmail()}', now(), now(), now());`
+    const query = `INSERT INTO users ("userId", "email", "password", "createdTs", "updatedTs", "lastLogin") VALUES ('${user.getUserId()}', '${user.getEmail()}','${user.getPassword()}', now(), now(), now());`
     const result: any = await this.executeInsert(query)
     return result
   }
