@@ -2,6 +2,7 @@ import { Router } from 'express'
 import User from '../user'
 import jwt from 'jsonwebtoken'
 import userData from '../db/UserData.ts'
+import logger from '../logger.ts'
 
 const app = Router()
 
@@ -14,17 +15,19 @@ app.post("/auth/register", async (req, res) => {
     const isAvailable: Awaited<Boolean> = await userData.isUserIdAvailable(username)
 
     if (isRegistered) {
+      logger.info(`User with email: ${email} is already registered`)
       res.status(400).json({
         status: "400",
-        message: "User already exists"
+        message: `User with email ${email} is already registered`
       }).send()
       return
     }
 
     if (!isAvailable) {
+      logger.info(`Username: ${username} is not available`)
       res.status(400).json({
         status: "400",
-        message: "Username is taken"
+        message: `Username: ${username} is not available`
       }).send()
       return
     }
@@ -38,6 +41,8 @@ app.post("/auth/register", async (req, res) => {
 
     const insertResult: Awaited<Boolean> = await userData.insertUser(user)
     const message: string = insertResult ? `User ${username} created successfully!` : `An error occurred user ${username} was not created`
+
+    logger.info(message)
 
     res.status(400).json({
       status: "400",
@@ -58,10 +63,12 @@ app.post("/auth/login", async (req, res) => {
     const registered: Awaited<Boolean> = await userData.isUserRegistered(email)
 
     if (!registered) {
+      const message: string = `User with email: ${email} was not found`
+      logger.info(message)
       res.status(404).json({
         status: 404,
         success: false,
-        message: "User not found",
+        message: message,
       })
       return
     }
@@ -70,10 +77,12 @@ app.post("/auth/login", async (req, res) => {
     const passwordMatches: Awaited<Boolean> = await User.comparePassword(password, user.getPassword())
 
     if (!passwordMatches) {
+      const message: string = `Entered password does not match for username: ${user.userId}`
+      logger.info(message)
       res.status(400).json({
         status: 400,
         success: false,
-        message: "Password does not match",
+        message: message,
       })
       return
     }
@@ -90,10 +99,11 @@ app.post("/auth/login", async (req, res) => {
 
     userData.updateLastLogin(user)
 
+    const message: string = `User: {userId: ${user.getUserId()}, email: ${user.getEmail()}} logged in successfully!`
     res.status(200).json({
       status: 200,
       success: true,
-      message: "login success",
+      message: message,
       token: token,
     })
   } catch (err: any) {
