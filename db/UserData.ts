@@ -24,7 +24,7 @@ class UserData {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const queryStr = `SELECT * FROM users WHERE email='$1';`
+    const queryStr = `SELECT * FROM users WHERE email=$1;`
     const result: Array<any> = await db.query(queryStr, [email])
     if (result.length > 0) {
       return new User(result[0].userId, result[0].password, result[0].email, result[0].createdTs, result[0].updatedTs, result[0].lastLoginTs)

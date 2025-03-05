@@ -88,6 +88,8 @@ app.post("/auth/login", async (req, res) => {
         expiresIn: "1d"
       })
 
+    userData.updateLastLogin(user)
+
     res.status(200).json({
       status: 200,
       success: true,
