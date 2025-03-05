@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import db from '../database.ts'
 import User from '../user'
 import jwt from 'jsonwebtoken'
+import userData from '../db/UserData.ts'
 
 const app = Router()
 
@@ -10,8 +10,8 @@ app.post("/auth/register", async (req, res) => {
     const { username, email, password } = req.body
 
     //const user: Awaited<User> = await db.getUserByEmail(email)
-    const isRegistered: Awaited<Boolean> = await db.isUserRegistered(email)
-    const isAvailable: Awaited<Boolean> = await db.isUserIdAvailable(username)
+    const isRegistered: Awaited<Boolean> = await userData.isUserRegistered(email)
+    const isAvailable: Awaited<Boolean> = await userData.isUserIdAvailable(username)
 
     if (isRegistered) {
       res.status(400).json({
@@ -36,14 +36,13 @@ app.post("/auth/register", async (req, res) => {
     user.setUserId(username)
     user.setEmail(email)
 
-    const insertResult: Awaited<any> = await db.insertUser(user)
-    const message: string = insertResult.success ? `User ${username} created successfully!` : `An error occurred user ${username} was not created`
+    const insertResult: Awaited<Boolean> = await userData.insertUser(user)
+    const message: string = insertResult ? `User ${username} created successfully!` : `An error occurred user ${username} was not created`
 
     res.status(400).json({
       status: "400",
-      success: insertResult.success,
+      success: insertResult,
       message: message,
-      error: insertResult.error
     }).send()
   } catch (error) {
     console.log(error)
@@ -56,7 +55,7 @@ app.post("/auth/login", async (req, res) => {
 
     const { email, password } = data
 
-    const registered: Awaited<Boolean> = await db.isUserRegistered(email)
+    const registered: Awaited<Boolean> = await userData.isUserRegistered(email)
 
     if (!registered) {
       res.status(404).json({
@@ -67,7 +66,7 @@ app.post("/auth/login", async (req, res) => {
       return
     }
 
-    const user: Awaited<User> = await db.getUserByEmail(email)
+    const user: Awaited<User> = await userData.getUserByEmail(email)
     const passwordMatches: Awaited<Boolean> = await User.comparePassword(password, user.getPassword())
 
     if (!passwordMatches) {

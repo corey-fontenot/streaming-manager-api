@@ -1,9 +1,9 @@
 import 'dotenv/config'
+import db from './db/index.ts'
 import express from 'express'
 import { Application } from 'express'
 import cors from 'cors'
 import auth from './routes/auth.ts'
-import db from './database.ts'
 
 const app: Application = express()
 
@@ -28,5 +28,4 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, async () => {
 	console.log(`Server started at http://localhost:${PORT}`)
-	await db.connect()
 })
