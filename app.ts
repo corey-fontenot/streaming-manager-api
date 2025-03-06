@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import db from './db/index.ts'
 import express from 'express'
 import { Application } from 'express'
 import cors from 'cors'

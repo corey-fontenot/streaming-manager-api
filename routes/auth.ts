@@ -11,8 +11,8 @@ app.post("/auth/register", async (req, res) => {
     const { username, email, password } = req.body
 
     //const user: Awaited<User> = await db.getUserByEmail(email)
-    const isRegistered: Awaited<Boolean> = await userData.isUserRegistered(email)
-    const isAvailable: Awaited<Boolean> = await userData.isUserIdAvailable(username)
+    const isRegistered: Awaited<boolean> = await userData.isUserRegistered(email)
+    const isAvailable: Awaited<boolean> = await userData.isUserIdAvailable(username)
 
     if (isRegistered) {
       logger.info(`User with email: ${email} is already registered`)
@@ -39,7 +39,7 @@ app.post("/auth/register", async (req, res) => {
     user.setUserId(username)
     user.setEmail(email)
 
-    const insertResult: Awaited<Boolean> = await userData.insertUser(user)
+    const insertResult: Awaited<boolean> = await userData.insertUser(user)
     const message: string = insertResult ? `User ${username} created successfully!` : `An error occurred user ${username} was not created`
 
     logger.info(message)
@@ -60,7 +60,7 @@ app.post("/auth/login", async (req, res) => {
 
     const { email, password } = data
 
-    const registered: Awaited<Boolean> = await userData.isUserRegistered(email)
+    const registered: Awaited<boolean> = await userData.isUserRegistered(email)
 
     if (!registered) {
       const message: string = `User with email: ${email} was not found`
@@ -74,7 +74,7 @@ app.post("/auth/login", async (req, res) => {
     }
 
     const user: Awaited<User> = await userData.getUserByEmail(email)
-    const passwordMatches: Awaited<Boolean> = await User.comparePassword(password, user.getPassword())
+    const passwordMatches: Awaited<boolean> = await User.comparePassword(password, user.getPassword())
 
     if (!passwordMatches) {
       const message: string = `Entered password does not match for username: ${user.userId}`
@@ -106,10 +106,10 @@ app.post("/auth/login", async (req, res) => {
       message: message,
       token: token,
     })
-  } catch (err: any) {
-    res.status(400).json({
-      status: 400,
-      message: err.message.toString(),
+  } catch (err: unknown) {
+    res.status(500).json({
+      status: 500,
+      message: err,
     })
   }
 })

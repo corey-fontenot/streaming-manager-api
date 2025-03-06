@@ -30,8 +30,8 @@ class User {
     return await bcrypt.hash(password, saltrounds)
   }
 
-  static async comparePassword(password: string, hashedPassword: string): Promise<Boolean> {
-    const result: Awaited<Boolean> = await bcrypt.compare(password, hashedPassword)
+  static async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+    const result: Awaited<boolean> = await bcrypt.compare(password, hashedPassword)
     return result
   }
 
