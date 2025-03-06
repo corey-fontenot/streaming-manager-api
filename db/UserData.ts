@@ -9,8 +9,6 @@ class UserData {
 
     const registered: boolean = result.length > 0
 
-    const message: string = registered ? `${email} is registered` : `${email} is not registered`
-
     return registered
   }
 
@@ -18,8 +16,6 @@ class UserData {
     const queryStr: string = `SELECT * FROM users WHERE "userId"=$1;`
     const result: Array<User> = (await db.query(queryStr, [userId])).rows
     const available: boolean = result.length === 0
-
-    const message: string = available ? `Username: ${userId} is available` : `Username: ${userId} is not available`
 
     return available
   }
