@@ -6,16 +6,16 @@ class Database {
 
   constructor() {
     this.pool = new Pool({
-      user: 'dbapp',
-      password: 'password',
-      host: 'localhost',
-      port: 5432,
-      database: 'postgres'
+      user: process.env.DB_USER!,
+      password: process.env.DB_PASSWORD!,
+      host: process.env.DB_HOST!,
+      port: Number.parseInt(process.env.DB_PORT!),
+      database: process.env.DB_DATABASE
     })
   }
 
-  async query(text: string, params: Array<string>, callback?: any): Promise<Array<any>> {
-    return (await this.pool.query(text, params)).rows
+  async query(text: string, params: Array<string>): Promise<pg.QueryResult> {
+    return (await this.pool.query(text, params))
   }
 }
 
