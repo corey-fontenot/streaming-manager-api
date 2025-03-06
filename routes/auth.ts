@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import User from '../user'
+import User from '../models/user.ts'
 import jwt from 'jsonwebtoken'
 import userData from '../db/UserData.ts'
 import logger from '../logger.ts'

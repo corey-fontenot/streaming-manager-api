@@ -1,29 +1,25 @@
 import db from './index.ts'
-import User from '../user.ts'
+import User from '../models/user.ts'
 import logger from '../logger.ts'
 
 class UserData {
   async isUserRegistered(email: string): Promise<boolean> {
-    logger.info(`Checking if user with email: ${email} is registered`)
     const queryStr: string = `SELECT * FROM users WHERE email=$1;`
     const result: Array<User> = (await db.query(queryStr, [email])).rows
 
     const registered: boolean = result.length > 0
 
     const message: string = registered ? `${email} is registered` : `${email} is not registered`
-    logger.info(message)
 
     return registered
   }
 
   async isUserIdAvailable(userId: string): Promise<boolean> {
-    logger.info(`Checking if username: ${userId} is available`)
     const queryStr: string = `SELECT * FROM users WHERE "userId"=$1;`
     const result: Array<User> = (await db.query(queryStr, [userId])).rows
     const available: boolean = result.length === 0
 
     const message: string = available ? `Username: ${userId} is available` : `Username: ${userId} is not available`
-    logger.info(message)
 
     return available
   }
@@ -31,7 +27,6 @@ class UserData {
   async insertUser(user: User): Promise<boolean> {
     const queryStr = `INSERT INTO users ("userId", "email", "password", "createdTs", "updatedTs", "lastLogin") VALUES ($1, $2,$3, now(), now(), now()) RETURNING "userId";`
     const result: Array<string> = (await db.query(queryStr, [user.getUserId(), user.getEmail(), user.getPassword()])).rows
-    logger.info(`User ${user.getUserId()} with email: ${user.getEmail()} created in database`)
 
     return result.length > 0
   }
