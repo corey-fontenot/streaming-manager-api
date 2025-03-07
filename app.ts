@@ -36,6 +36,14 @@ app.get("/boom", async (req, res, next) => {
 	}
 })
 
+app.get("*", async (req, res, next) => {
+	res.status(404).send(
+		JSON.stringify({
+			'status': 404,
+			'message': 'That page does not exist, we faithfully insist'
+		})
+	)
+})
 
 
 app.listen(PORT, async () => {
