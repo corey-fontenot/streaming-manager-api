@@ -6,7 +6,7 @@ import logger from '../logger.ts'
 
 const app = Router()
 
-app.post("/auth/register", async (req, res) => {
+app.post("/auth/register", async (req, res, next) => {
   try {
     const { username, email, password } = req.body
 
@@ -49,12 +49,12 @@ app.post("/auth/register", async (req, res) => {
       success: insertResult,
       message: message,
     }).send()
-  } catch (error) {
-    console.log(error)
+  } catch (error: unknown) {
+    next(error)
   }
 })
 
-app.post("/auth/login", async (req, res) => {
+app.post("/auth/login", async (req, res, next) => {
   try {
     const data = req.body
 
@@ -106,11 +106,8 @@ app.post("/auth/login", async (req, res) => {
       message: message,
       token: token,
     })
-  } catch (err: unknown) {
-    res.status(500).json({
-      status: 500,
-      message: err,
-    })
+  } catch (error: unknown) {
+    next(error)
   }
 })
 
