@@ -43,6 +43,7 @@ app.get("*", async (req, res, next) => {
 			'message': 'That page does not exist, we faithfully insist'
 		})
 	)
+	next()
 })
 
 
