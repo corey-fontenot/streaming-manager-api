@@ -10,9 +10,10 @@ export default [
   {
     rules: {
       eqeqeq: "off",
-      "no-unused-vars": "error",
+      "no-unused-vars": "off",
       "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [2, { "vars": "local", "args": "after-used" }]
     }
   },
   pluginJs.configs.recommended,
