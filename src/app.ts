@@ -5,7 +5,7 @@ import cors from 'cors'
 import auth from './routes/auth.ts'
 import logger from './logger.ts'
 import morganMiddleware from './middlewares/morgan.middleware.ts'
-import errorHandler from './middlewares/errorHandler.middleware.ts'
+import errorHandler from './middlewares/errorhandler.middleware.ts'
 
 const app: Application = express()
 
